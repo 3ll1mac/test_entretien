@@ -21,13 +21,9 @@ app.add_middleware(
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
-    return {"message": "Welcome to your todo list."}
+    return {"message": "Welcome."}
 
 todos = [
-    {
-        "id": "1",
-        "item": "Read a book."
-    },
     {
         "id": "2",
         "item": "Cycle around town."
@@ -38,11 +34,19 @@ todos = [
 async def get_todos() -> dict:
     return { "data": todos }
 
+@app.post("/subscribe", tags=["todos"])
+async def add_user(todo: dict) -> dict:
+    todos.append(todo)
+    print("Hello reussi\n")
+    return {
+        "data": { "User created." }
+        }
+
 @app.post("/todo", tags=["todos"])
 async def add_todo(todo: dict) -> dict:
     todos.append(todo)
     return {
-        "data": { "Todo added." }
+        "data": { "User created." }
     }
 
 

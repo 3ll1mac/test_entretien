@@ -19,7 +19,8 @@ import {
 
 interface Todo {
   id: string;
-  item: string;
+  user: string;
+  pass: string;
 }
 
 interface TodoHelperProps {
@@ -53,23 +54,68 @@ export default function Todos() {
   return (
       <TodosContext.Provider value={{todos, fetchTodos}}>
       <Container maxW="container.xl" pt="100px">
-      <AddTodo />
-      <Stack gap={5}>
-      {
-          todos.map((todo) => (
-              <TodoHelper item={todo.item} id={todo.id} fetchTodos={fetchTodos}/>
-          ))
-      }
-      </Stack>
+      <Subscribe />
+      <Connect />
       </Container>
       </TodosContext.Provider>
   )
 
 }
 
+function Subscribe() {
+    const [username, setUser] = React.useState("")
+    const [password, setPass] = React.useState("")
+    const {todos, fetchTodos} = React.useContext(TodosContext)
 
+    const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassm(event.target.value)
+    }
 
-function AddTodo() {
+    const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUser(event.target.value)
+    }
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const newUser = {
+            "id": todos.length + 1,
+            "user": username,
+            "pass": password
+        }
+
+        fetch("http://localhost:8000/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newUser)
+        }).then(fetchTodos)
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+        Subscribe
+        <Input
+        pr="4.5rem"
+        type="text"
+        placeholder="Enter a username"
+        aria-label="Enter a username"
+        onChange={handleUsername}
+        />
+
+        <Input
+        pr="4.5rem"
+        type="text"
+        placeholder="Enter password"
+        aria-label="Enter password"
+        onChange={handlePassword}
+        />
+        <Button h="1.5rem" size="sm" type="submit">
+          Subscribe
+        </Button>
+        </form>
+    )
+}
+
+function Connect() {
     const [item, setItem] = React.useState("")
     const {todos, fetchTodos} = React.useContext(TodosContext)
 
@@ -84,7 +130,7 @@ function AddTodo() {
             "item": item
         }
 
-        fetch("http://localhost:8000/todo", {
+        fetch("http://localhost:8000/connect", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTodo)
@@ -93,23 +139,6 @@ function AddTodo() {
 
     return (
         <form onSubmit={handleSubmit}>
-        Subscribe
-        <Input
-        pr="4.5rem"
-        type="text"
-        placeholder="Enter a username"
-        aria-label="Enter a username"
-        onChange={handleInput}
-        />
-
-        <Input
-        pr="4.5rem"
-        type="text"
-        placeholder="Enter a password"
-        aria-label="Enter a password"
-        onChange={handleInput}
-        />
-
         Connect
         <Input
         pr="4.5rem"
@@ -126,7 +155,9 @@ function AddTodo() {
         aria-label="Enter a password"
         onChange={handleInput}
         />
-
+        <Button h="1.5rem" size="sm">
+          Connect
+        </Button>
         </form>
     )
 }
