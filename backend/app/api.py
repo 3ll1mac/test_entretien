@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import sqlite3
+base = sqlite3.connect('example.db')
+c = base.cursor()
+#c.execute('''CREATE TABLE users
+#            (username text, password text)''')
 
 app = FastAPI()
 
@@ -21,7 +26,7 @@ app.add_middleware(
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
-    return {"message": "Welcome."}
+    return {"message": "Please go to /users to see the list of users"}
 
 todos = [
     {
@@ -31,6 +36,7 @@ todos = [
     }
 ]
 
+
 @app.get("/todo", tags=["todos"])
 async def get_todos() -> dict:
     return { "data": todos }
@@ -38,7 +44,9 @@ async def get_todos() -> dict:
 
 @app.post("/subscribe", tags=["todos"])
 async def add_user(todo: dict) -> dict:
-    todos.append(todo)
+    #todos.append(todo)
+    c.execute("INSERT INTO users VALUES (?,?)", (todo["user"], todo["pass"]));
+    base.commit();
     print("hello reussi\n")
     return {
         "data": { "user created." }
@@ -50,14 +58,15 @@ async def add_user(todo: dict) -> dict:
 async def add_todo(todo: dict) -> dict:
     print(todo)
     for elt in todos:
-        if elt["user"]  == todo["user"]:
-            if elt["pass"] == todo["pass"]:
-                print("connected");
+        c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
+        result = c.fetchone();
+        if len(result) > 0:
                 return {
                     "data": { "You are connected" }
                     }
-            else:
-                print("not connected");
-                return {
-                    "data": { "The password or username is incorrect." }
-                    }
+        else:
+            print("not connected");
+            return {
+                "data": { "The password or username is incorrect." }
+                }
+        
