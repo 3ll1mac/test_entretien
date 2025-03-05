@@ -28,29 +28,26 @@ app.add_middleware(
 async def read_root() -> dict:
     return {"message": "Please go to /users to see the list of users"}
 
-todos = [
-    {
-        "id": "2",
-        "user": "camille",
-        "pass": "geoffroy"
-    }
-]
-
 
 @app.get("/todo", tags=["todos"])
 async def get_todos() -> dict:
-    return { "data": todos }
+    c.execute("SELECT * FROM users");
+    res = c.fetchall();
+    print(res);
+    return { "data": res }
 
 
 @app.post("/subscribe", tags=["todos"])
 async def add_user(todo: dict) -> dict:
-    #todos.append(todo)
+    c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
+    result = c.fetchone();
+    if len(result) > 0:
+        raise HTTPException(status_code=404, detail="A user with this name already exists.")
+        
     c.execute("INSERT INTO users VALUES (?,?)", (todo["user"], todo["pass"]));
     base.commit();
     print("hello reussi\n")
-    return {
-        "data": { "user created." }
-        }
+    return {"data": { "user created." }}
 
 
 
@@ -60,13 +57,7 @@ async def add_todo(todo: dict) -> dict:
     for elt in todos:
         c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
         result = c.fetchone();
-        if len(result) > 0:
-                return {
-                    "data": { "You are connected" }
-                    }
+        if len(result) == 0:
+            raise HTTPException(status_code=404, detail="The usernma or password is incorrect.")
         else:
-            print("not connected");
-            return {
-                "data": { "The password or username is incorrect." }
-                }
-        
+            return {"data": { "You are connected." }}

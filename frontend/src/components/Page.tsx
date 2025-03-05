@@ -68,7 +68,7 @@ function Subscribe() {
     const {todos, fetchTodos} = React.useContext(TodosContext)
 
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPassm(event.target.value)
+        setPass(event.target.value)
     }
 
     const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
