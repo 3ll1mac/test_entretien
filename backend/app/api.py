@@ -26,7 +26,8 @@ async def read_root() -> dict:
 todos = [
     {
         "id": "2",
-        "item": "Cycle around town."
+        "user": "camille",
+        "pass": "geoffroy"
     }
 ]
 
@@ -34,32 +35,29 @@ todos = [
 async def get_todos() -> dict:
     return { "data": todos }
 
+
 @app.post("/subscribe", tags=["todos"])
 async def add_user(todo: dict) -> dict:
     todos.append(todo)
-    print("Hello reussi\n")
+    print("hello reussi\n")
     return {
-        "data": { "User created." }
+        "data": { "user created." }
         }
 
-@app.post("/todo", tags=["todos"])
+
+
+@app.post("/connect", tags=["todos"])
 async def add_todo(todo: dict) -> dict:
-    todos.append(todo)
-    return {
-        "data": { "User created." }
-    }
-
-
-@app.put("/todo/{id}", tags=["todos"])
-async def update_todo(id: int, body: dict) -> dict:
-    for todo in todos:
-        if int(todo["id"]) == id:
-            todo["item"] = body["item"]
-            return {
-                "data": f"Todo with id {id} has been updated."
-            }
-
-    return {
-        "data": f"Todo with id {id} not found."
-    }
-
+    print(todo)
+    for elt in todos:
+        if elt["user"]  == todo["user"]:
+            if elt["pass"] == todo["pass"]:
+                print("connected");
+                return {
+                    "data": { "You are connected" }
+                    }
+            else:
+                print("not connected");
+                return {
+                    "data": { "The password or username is incorrect." }
+                    }
