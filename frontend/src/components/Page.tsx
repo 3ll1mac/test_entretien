@@ -18,6 +18,8 @@ import {
 } from "@chakra-ui/react";
 
 
+// Main page, will call subcribe and connect parts
+
 export default function LoginPage() {
   return (
       <Container maxW="container.xl" pt="100px">
@@ -31,6 +33,7 @@ function Subscribe() {
     const [username, setUser] = React.useState("")
     const [password, setPass] = React.useState("")
 
+    // updating values in username / password
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
     }
@@ -39,14 +42,21 @@ function Subscribe() {
         setUser(event.target.value)
     }
 
+    // sending data to backend
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        
+        const element = document.getElementById("info");
+        if (username.length === 0 || password.length === 0)
+        {
+            element.innerHTML = "The username and password field must not be empty !"
+            return;
+        }
         const newUser = {
             "user": username,
             "pass": password
         }
 
-        const element = document.getElementById("info");
         document.getElementById('username_input').value = ''
         document.getElementById('password_input').value = ''
         element.innerHTML = "";
@@ -56,6 +66,9 @@ function Subscribe() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
             }).then((response) => {
+                // for the level of development of the api, the only 
+                // error received will be because a user already exists 
+                // with this name
                 if (response.status === 200)
                     element.innerHTML = "You are successfully subscribed.";
                 else
@@ -95,6 +108,7 @@ function Connect() {
     const [username, setUser] = React.useState("")
     const [password, setPass] = React.useState("")
 
+    // updating values in username / password
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
     }
@@ -103,14 +117,22 @@ function Connect() {
         setUser(event.target.value)
     }
 
+
+    // sending data to backend
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const element = document.getElementById("info_connect");
+        if (username.length === 0 || password.length === 0)
+        {
+            element.innerHTML = "The username and password field must not be empty !"
+            return;
+        }
+
         const newTodo = {
             "user": username,
             "pass": password
         }
 
-        const element = document.getElementById("info_connect");
         element.innerHTML = "";
         document.getElementById('connect_username_input').value = ''
         document.getElementById('connect_password_input').value = ''
@@ -120,6 +142,9 @@ function Connect() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newTodo)
             }).then((response) => {
+                // for the level of development of the API, the only
+                // error received will be because the username or password 
+                // is invalid
                 if (response.status === 200)
                     element.innerHTML = "You are successfully connected.";
                 else
