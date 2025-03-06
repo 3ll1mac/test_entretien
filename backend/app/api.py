@@ -2,10 +2,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 import sqlite3
+import bcrypt
+bcrypt.__about__ = bcrypt
 
 base = sqlite3.connect('base.db')
 c = base.cursor()
-c.execute('''CREATE TABLE users
+c.execute('''CREATE TABLE IF NOT EXISTS users
             (username text, password text)''')
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -13,16 +15,20 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "localhost:5173"
+    "http://localhost:8000",
+    "http://0.0.0.0:8000",
+    "http://0.0.0.0:5173",
+    "localhost:5173",
 ]
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 

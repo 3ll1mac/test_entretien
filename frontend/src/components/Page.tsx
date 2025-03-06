@@ -60,8 +60,10 @@ function Subscribe() {
         document.getElementById('username_input').value = ''
         document.getElementById('password_input').value = ''
         element.innerHTML = "";
+        setUser("");
+        setPass("");
 
-            res = fetch("http://localhost:8000/subscribe", {
+            fetch("http://localhost:8000/subscribe", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
@@ -78,7 +80,7 @@ function Subscribe() {
 
     return (
         <form onSubmit={handleSubmit}>
-        <h1>Subscribe</h1>
+        <h1>Sign up</h1>
         <Input
         pr="4.5rem"
         type="text"
@@ -136,16 +138,17 @@ function Connect() {
         element.innerHTML = "";
         document.getElementById('connect_username_input').value = ''
         document.getElementById('connect_password_input').value = ''
-
-            res = fetch("http://localhost:8000/connect", {
+        setUser("");
+        setPass("");
+            fetch("http://localhost:8000/connect", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newTodo)
-            }).then((response) => {
+            }).then((res) => {
                 // for the level of development of the API, the only
                 // error received will be because the username or password 
                 // is invalid
-                if (response.status === 200)
+                if (res.status === 200)
                     element.innerHTML = "You are successfully connected.";
                 else
                     element.innerHTML = "The username or password is invalid";
@@ -154,7 +157,7 @@ function Connect() {
 
     return (
         <form onSubmit={handleSubmit}>
-        <h1>Connect</h1>
+        <h1>Log in</h1>
         <Input
         pr="4.5rem"
         type="text"

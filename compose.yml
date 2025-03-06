@@ -1,0 +1,12 @@
+services:
+  back:
+    build: backend/
+    environment: 
+    ports:
+      - "8000:80"
+  front:
+    build: frontend/
+    ports:
+      - "80:5173"
+  db:
+    image: "keinos/sqlite3:latest"
