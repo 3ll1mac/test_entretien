@@ -1,7 +1,6 @@
 services:
   back:
     build: backend/
-    environment: 
     ports:
       - "8000:80"
   front:

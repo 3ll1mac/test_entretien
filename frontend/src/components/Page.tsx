@@ -34,6 +34,8 @@ function Subscribe() {
     const [password, setPass] = React.useState("")
 
     // updating values in username / password
+    // The following way allows to easily add checks on each change made by user
+    // For instance if we exclude some characters like '";
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
     }
@@ -111,6 +113,8 @@ function Connect() {
     const [password, setPass] = React.useState("")
 
     // updating values in username / password
+    // The following way allows to easily add checks on each change made by user
+    // For instance if we exclude some characters like '";
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
     }
