@@ -82,22 +82,24 @@ function Subscribe() {
             "user": username,
             "pass": password
         }
-        console.log("hello1\n");
 
-        try
-        {
+        console.log("hello1\n");
+        const element = document.getElementById("info");
+        document.getElementById('username_input').value = ''
+        document.getElementById('password_input').value = ''
+        element.innerHTML = "";
+
             res = fetch("http://localhost:8000/subscribe", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
-            }).then(fetchTodos)
-        } catch(e)
-        {
-            console.log("hello\n");
-            const element = document.getElementById("info");
-            element.innerHTML = "A user by that name already exists";
+            }).then((response) => {
+                if (response.status === 200)
+                    element.innerHTML = "You are successfully subscribed.";
+                else
+                    element.innerHTML = "A user by that name already exists";
+            })
         }
-    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -108,6 +110,7 @@ function Subscribe() {
         placeholder="Enter a username"
         aria-label="Enter a username"
         onChange={handleUsername}
+        id="username_input"
         />
 
         <Input
@@ -116,6 +119,7 @@ function Subscribe() {
         placeholder="Enter password"
         aria-label="Enter password"
         onChange={handlePassword}
+        id="password_input"
         />
         <Button h="1.5rem" size="sm" type="submit">
           Subscribe
@@ -147,17 +151,21 @@ function Connect() {
         }
 
         const element = document.getElementById("info_connect");
-        try{
+        element.innerHTML = "";
+        document.getElementById('connect_username_input').value = ''
+        document.getElementById('connect_password_input').value = ''
+
             res = fetch("http://localhost:8000/connect", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newTodo)
-            }).then(fetchTodos)
-            element.innerHTML = "You are successfully connected";
-        } catch(e)
-        {
-            element.innerHTML = "The username or password is incorrect.";
-        }
+            }).then((response) => {
+                if (response.status === 200)
+                    element.innerHTML = "You are successfully connected.";
+                else
+                    element.innerHTML = "The username or password is invalid";
+            })
+    
     }
 
     return (
@@ -169,6 +177,7 @@ function Connect() {
         placeholder="Enter a username"
         aria-label="Enter a username"
         onChange={handleUsername}
+        id="connect_username_input"
         />
 
         <Input
@@ -177,6 +186,7 @@ function Connect() {
         placeholder="Enter a password"
         aria-label="Enter a password"
         onChange={handlePassword}
+        id="connect_password_input"
         />
         <Button h="1.5rem" size="sm" type="submit">
         Connect

@@ -57,8 +57,10 @@ async def add_user(todo: dict) -> dict:
 async def add_todo(todo: dict) -> dict:
     c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
     result = c.fetchone();
+    print("BANABE\n")
     print(result)
-    if len(result) == 0 or pwd_context.verify(todo["pass"],result[1]):
+    print(pwd_context.hash(todo["pass"]))
+    if len(result) == 0 or not pwd_context.verify(todo["pass"],result[1]):
         raise HTTPException(status_code=404, detail="The username or password is incorrect.")
     else:
-        return {"data": { "You are connected." }}
+        return {"data": { "You are connected."}}
