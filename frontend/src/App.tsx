@@ -3,7 +3,7 @@ import { defaultSystem } from "@chakra-ui/react"
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from "./components/Header";
-import Todos from "./components/Page";  
+import LoginPage from "./components/Page";  
 import DisplayUsers from "./components/Display";  
 
 const App: React.FC = () => {
@@ -14,7 +14,7 @@ const App: React.FC = () => {
     <Router>
         <div className="App">
             <Routes>
-                <Route path="/" element={<Todos />} />
+                <Route path="/" element={<LoginPage />} />
                 <Route path="/users" element={<DisplayUsers />} />
             </Routes>
         </div>

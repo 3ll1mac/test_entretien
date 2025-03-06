@@ -28,10 +28,10 @@ app.add_middleware(
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
-    return {"message": "Please go to /users to see the list of users"}
+    return {"message": "Go to /users to see the list of users"}
 
 
-@app.get("/todo", tags=["todos"])
+@app.get("/fetch_users", tags=["display"])
 async def get_todos() -> dict:
     c.execute("SELECT username FROM users");
     res = c.fetchall();
@@ -39,28 +39,23 @@ async def get_todos() -> dict:
     return { "data": res }
 
 
-@app.post("/subscribe", tags=["todos"])
+@app.post("/subscribe", tags=["handle"])
 async def add_user(todo: dict) -> dict:
     c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
     result = c.fetchall();
     if len(result) > 0:
         raise HTTPException(status_code=404, detail="A user with this name already exists.")
-    print(result)
     c.execute("INSERT INTO users VALUES (?,?)", (todo["user"], pwd_context.hash(todo["pass"])));
     base.commit();
-    print("hello reussi\n")
     return {"data": { "user created." }}
 
 
 
-@app.post("/connect", tags=["todos"])
+@app.post("/connect", tags=["handle"])
 async def add_todo(todo: dict) -> dict:
     c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
     result = c.fetchone();
-    print("BANABE\n")
-    print(result)
-    print(pwd_context.hash(todo["pass"]))
-    if len(result) == 0 or not pwd_context.verify(todo["pass"],result[1]):
+    if result == None  or not pwd_context.verify(todo["pass"],result[1]):
         raise HTTPException(status_code=404, detail="The username or password is incorrect.")
     else:
         return {"data": { "You are connected."}}

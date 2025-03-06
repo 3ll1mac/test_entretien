@@ -17,55 +17,19 @@ import {
   DialogActionTrigger,
 } from "@chakra-ui/react";
 
-interface Todo {
-  id: string;
-  user: string;
-  pass: string;
-}
 
-interface TodoHelperProps {
-  item: string;
-  id: string;
-  fetchTodos: () => void;
-}
-
-interface TodoHelperProps {
-  item: string;
-  id: string;
-  fetchTodos: () => void;
-}
-
-const TodosContext = createContext({
-  todos: [], fetchTodos: () => {}
-})
-
-
-export default function Todos() {
-  const [todos, setTodos] = useState([])
-  const fetchTodos = async () => {
-    const response = await fetch("http://localhost:8000/todo")
-    const todos = await response.json()
-    setTodos(todos.data)
-  }
-  useEffect(() => {
-    fetchTodos()
-  }, [])
-
+export default function LoginPage() {
   return (
-      <TodosContext.Provider value={{todos, fetchTodos}}>
       <Container maxW="container.xl" pt="100px">
       <Subscribe />
       <Connect />
       </Container>
-      </TodosContext.Provider>
   )
-
 }
 
 function Subscribe() {
     const [username, setUser] = React.useState("")
     const [password, setPass] = React.useState("")
-    const {todos, fetchTodos} = React.useContext(TodosContext)
 
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
@@ -78,12 +42,10 @@ function Subscribe() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const newUser = {
-            "id": todos.length + 1,
             "user": username,
             "pass": password
         }
 
-        console.log("hello1\n");
         const element = document.getElementById("info");
         document.getElementById('username_input').value = ''
         document.getElementById('password_input').value = ''
@@ -132,7 +94,6 @@ function Subscribe() {
 function Connect() {
     const [username, setUser] = React.useState("")
     const [password, setPass] = React.useState("")
-    const {todos, fetchTodos} = React.useContext(TodosContext)
 
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPass(event.target.value)
@@ -145,7 +106,6 @@ function Connect() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const newTodo = {
-            "id": todos.length + 1,
             "user": username,
             "pass": password
         }
@@ -165,7 +125,6 @@ function Connect() {
                 else
                     element.innerHTML = "The username or password is invalid";
             })
-    
     }
 
     return (
