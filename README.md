@@ -1,14 +1,30 @@
+# Run locally
+
 Hello, to run the API, please type first in the frontend directory:
-$ npm run dev
+```bash
+npm run dev
+```
 
 And the following one in the backend/app/ directory:
-$ fastapi dev api.py
-
+```bash
+fastapi dev api.py
+```
 
 Then go to you favorite browser and enter the following url:
-http://localhost:5173/
-or
-http://localhost:5173/users 
-Depending on whether you want to subscribe and connect or see the list of users.
+* `http://localhost:5173/`
+if you want to log in or sign in.
+* `http://localhost:5173/users`
+if you want to see the users list.
 
+
+# Run with docker
+To run with the docker:
+```bash
+docker compose up
+```
+Then go to you favorite browser and enter the following url:
+* `http://localhost/`
+if you want to log in or sign in.
+* `http://localhost/users`
+if you want to see the users list.
 
