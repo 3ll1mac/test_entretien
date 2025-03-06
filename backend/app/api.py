@@ -1,12 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-
+from passlib.context import CryptContext
 import sqlite3
+
 base = sqlite3.connect('example.db')
 c = base.cursor()
 #c.execute('''CREATE TABLE users
 #            (username text, password text)''')
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 app = FastAPI()
 
 origins = [
@@ -31,7 +33,7 @@ async def read_root() -> dict:
 
 @app.get("/todo", tags=["todos"])
 async def get_todos() -> dict:
-    c.execute("SELECT * FROM users");
+    c.execute("SELECT username FROM users");
     res = c.fetchall();
     print(res);
     return { "data": res }
@@ -40,11 +42,11 @@ async def get_todos() -> dict:
 @app.post("/subscribe", tags=["todos"])
 async def add_user(todo: dict) -> dict:
     c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
-    result = c.fetchone();
+    result = c.fetchall();
     if len(result) > 0:
         raise HTTPException(status_code=404, detail="A user with this name already exists.")
-        
-    c.execute("INSERT INTO users VALUES (?,?)", (todo["user"], todo["pass"]));
+    print(result)
+    c.execute("INSERT INTO users VALUES (?,?)", (todo["user"], pwd_context.hash(todo["pass"])));
     base.commit();
     print("hello reussi\n")
     return {"data": { "user created." }}
@@ -53,11 +55,10 @@ async def add_user(todo: dict) -> dict:
 
 @app.post("/connect", tags=["todos"])
 async def add_todo(todo: dict) -> dict:
-    print(todo)
-    for elt in todos:
-        c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
-        result = c.fetchone();
-        if len(result) == 0:
-            raise HTTPException(status_code=404, detail="The usernma or password is incorrect.")
-        else:
-            return {"data": { "You are connected." }}
+    c.execute("SELECT * FROM users WHERE username = ?", (todo["user"], ))
+    result = c.fetchone();
+    print(result)
+    if len(result) == 0 or pwd_context.verify(todo["pass"],result[1]):
+        raise HTTPException(status_code=404, detail="The username or password is incorrect.")
+    else:
+        return {"data": { "You are connected." }}

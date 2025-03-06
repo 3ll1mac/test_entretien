@@ -82,17 +82,26 @@ function Subscribe() {
             "user": username,
             "pass": password
         }
+        console.log("hello1\n");
 
-        fetch("http://localhost:8000/subscribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newUser)
-        }).then(fetchTodos)
+        try
+        {
+            res = fetch("http://localhost:8000/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newUser)
+            }).then(fetchTodos)
+        } catch(e)
+        {
+            console.log("hello\n");
+            const element = document.getElementById("info");
+            element.innerHTML = "A user by that name already exists";
+        }
     }
 
     return (
         <form onSubmit={handleSubmit}>
-        Subscribe
+        <h1>Subscribe</h1>
         <Input
         pr="4.5rem"
         type="text"
@@ -111,6 +120,7 @@ function Subscribe() {
         <Button h="1.5rem" size="sm" type="submit">
           Subscribe
         </Button>
+        <p id="info"></p>
         </form>
     )
 }
@@ -136,16 +146,23 @@ function Connect() {
             "pass": password
         }
 
-        fetch("http://localhost:8000/connect", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newTodo)
-        }).then(fetchTodos)
+        const element = document.getElementById("info_connect");
+        try{
+            res = fetch("http://localhost:8000/connect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newTodo)
+            }).then(fetchTodos)
+            element.innerHTML = "You are successfully connected";
+        } catch(e)
+        {
+            element.innerHTML = "The username or password is incorrect.";
+        }
     }
 
     return (
         <form onSubmit={handleSubmit}>
-        Connect
+        <h1>Connect</h1>
         <Input
         pr="4.5rem"
         type="text"
@@ -162,8 +179,9 @@ function Connect() {
         onChange={handlePassword}
         />
         <Button h="1.5rem" size="sm" type="submit">
-          Connect
+        Connect
         </Button>
+        <p id="info_connect"></p>
         </form>
     )
 }
